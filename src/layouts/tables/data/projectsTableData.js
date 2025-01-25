@@ -32,7 +32,33 @@ import logoSlack from "assets/images/small-logos/logo-slack.svg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
+//React
+import { useEffect, useState } from "react";
+import axios from "axios";
 export default function data() {
+  const [reports, setReports] = useState([]);
+  const [surveys, setSurveys] = useState([]);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    console.log("here");
+    const fetchData = async () => {
+      try {
+        //fetch reports
+        const res1 = axios.get("http://localhost:4000/api/report/getallreports");
+        setReports(res1);
+        //fetch surveys
+        const res2 = axios.get("http://localhost:4000/api/survey/getallsurveys");
+        setSurveys(res2);
+      } catch (err) {
+        setError(err);
+      }
+    };
+
+    fetchData();
+
+    console.log(reports, surveys);
+  }, []);
+
   const Project = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" variant="rounded" />

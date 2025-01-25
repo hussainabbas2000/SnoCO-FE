@@ -20,7 +20,7 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
+import MDInput from "components/MDInput";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -30,6 +30,7 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import { Margin } from "@mui/icons-material";
 
 function Tables() {
   const { columns, rows } = authorsTableData();
@@ -53,9 +54,17 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  Reports Overview
                 </MDTypography>
               </MDBox>
+              <div style={{ paddingTop: "20px" }}>
+                <></>
+              </div>
+              <div style={{ marginLeft: "20px" }}>
+                <MDBox pr={1}>
+                  <MDInput label="Search here" />
+                </MDBox>
+              </div>
               <MDBox pt={3}>
                 <DataTable
                   table={{ columns, rows }}
@@ -80,9 +89,17 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Projects Table
+                  Surverys Overview
                 </MDTypography>
               </MDBox>
+              <div style={{ paddingTop: "20px" }}>
+                <></>
+              </div>
+              <div style={{ marginLeft: "20px" }}>
+                <MDBox pr={1}>
+                  <MDInput label="Search here" />
+                </MDBox>
+              </div>
               <MDBox pt={3}>
                 <DataTable
                   table={{ columns: pColumns, rows: pRows }}
