@@ -23,43 +23,45 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDProgress from "components/MDProgress";
-
+import MDBadge from "components/MDBadge";
 // Images
 import LogoAsana from "assets/images/small-logos/logo-asana.svg";
-import logoGithub from "assets/images/small-logos/github.svg";
-import logoAtlassian from "assets/images/small-logos/logo-atlassian.svg";
-import logoSlack from "assets/images/small-logos/logo-slack.svg";
-import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
-import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
-//React
-import { useEffect, useState } from "react";
+
+//Axios
 import axios from "axios";
-export default function data() {
-  const [reports, setReports] = useState([]);
+import { useState } from "react";
+import MDButton from "components/MDButton";
+
+export default function Data() {
+
   const [surveys, setSurveys] = useState([]);
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    console.log("here");
+  
+  //fetch surveys
     const fetchData = async () => {
-      try {
-        //fetch reports
-        const res1 = axios.get("http://localhost:4000/api/report/getallreports");
-        setReports(res1);
-        //fetch surveys
-        const res2 = axios.get("http://localhost:4000/api/survey/getallsurveys");
-        setSurveys(res2);
+      try{
+        const res = await axios.get("http://localhost:4000/api/survey/getallsurveys");
+        setSurveys(res.data)
       } catch (err) {
-        setError(err);
+        console.log(err);
       }
-    };
-
+    }
+    
     fetchData();
+    
+  
 
-    console.log(reports, surveys);
-  }, []);
 
-  const Project = ({ image, name }) => (
+  
+
+  
+      
+  
+
+ 
+
+
+  const Survey = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" variant="rounded" />
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
@@ -68,141 +70,107 @@ export default function data() {
     </MDBox>
   );
 
-  const Progress = ({ color, value }) => (
-    <MDBox display="flex" alignItems="center">
-      <MDTypography variant="caption" color="text" fontWeight="medium">
-        {value}%
-      </MDTypography>
-      <MDBox ml={0.5} width="9rem">
-        <MDProgress variant="gradient" color={color} value={value} />
-      </MDBox>
-    </MDBox>
-  );
+  // const Progress = ({ color, value }) => (
+  //   <MDBox display="flex" alignItems="center">
+  //     <MDTypography variant="caption" color="text" fontWeight="medium">
+  //       {value}%
+  //     </MDTypography>
+  //     <MDBox ml={0.5} width="9rem">
+  //       <MDProgress variant="gradient" color={color} value={value} />
+  //     </MDBox>
+  //   </MDBox>
+  // );
 
   return {
     columns: [
-      { Header: "project", accessor: "project", width: "30%", align: "left" },
-      { Header: "budget", accessor: "budget", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
-      { Header: "completion", accessor: "completion", align: "center" },
+      { Header: "Survey Name", accessor: "survey", width: "30%", align: "left" },
+      { Header: "Description", accessor: "description", align: "left" },
+      { Header: "Created On", accessor: "created_on", align: "center" },
+      { Header: "Keywords", accessor: "keywords", align: "center" },
+      { Header: "Url", accessor: "url", align: "center" },
+      { Header: "Department", accessor: "department", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 
-    rows: [
-      {
-        project: <Project image={LogoAsana} name="Asana" />,
-        budget: (
-          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
-            $2,500
+    rows: surveys.map(survey => ({
+        survey: <Survey image={LogoAsana} name={survey.survey_name} />,
+        description: (
+          <MDTypography component="label" variant="button" color="text" fontWeight="medium">
+            {survey.description}
           </MDTypography>
         ),
-        status: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            working
+        created_on: (
+          <MDTypography component="label" variant="caption" color="text" fontWeight="medium">
+            {survey.created_date}
           </MDTypography>
         ),
-        completion: <Progress color="info" value={60} />,
+        keywords: (
+          <MDBox display= "flex" flexWrap = "wrap">
+            {survey.keywords && survey.keywords.map((keyword) => {
+              return (
+                <MDBox ml={0}>
+                  <MDBadge badgeContent={keyword} color="success" variant="gradient" size="sm" />
+                </MDBox>
+              )
+            })}
+          </MDBox>
+        ),
+        url: (
+          
+          <MDTypography component = "a" href={survey.url} variant="caption" color="text" fontWeight="medium">
+            {survey.url}
+          </MDTypography>
+        ),
+        department: (
+          <MDTypography component = "label" variant="caption" color="text" fontWeight="medium">
+            {survey.department_id}
+          </MDTypography>
+        ),
         action: (
-          <MDTypography component="a" href="#" color="text">
+          <MDTypography component = "a" href="#" variant = "button" color="text">
             <Icon>more_vert</Icon>
           </MDTypography>
-        ),
-      },
-      {
-        project: <Project image={logoGithub} name="Github" />,
-        budget: (
-          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
-            $5,000
-          </MDTypography>
-        ),
-        status: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            done
-          </MDTypography>
-        ),
-        completion: <Progress color="success" value={100} />,
-        action: (
-          <MDTypography component="a" href="#" color="text">
-            <Icon>more_vert</Icon>
-          </MDTypography>
-        ),
-      },
-      {
-        project: <Project image={logoAtlassian} name="Atlassian" />,
-        budget: (
-          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
-            $3,400
-          </MDTypography>
-        ),
-        status: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            canceled
-          </MDTypography>
-        ),
-        completion: <Progress color="error" value={30} />,
-        action: (
-          <MDTypography component="a" href="#" color="text">
-            <Icon>more_vert</Icon>
-          </MDTypography>
-        ),
-      },
-      {
-        project: <Project image={logoSpotify} name="Spotify" />,
-        budget: (
-          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
-            $14,000
-          </MDTypography>
-        ),
-        status: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            working
-          </MDTypography>
-        ),
-        completion: <Progress color="info" value={80} />,
-        action: (
-          <MDTypography component="a" href="#" color="text">
-            <Icon>more_vert</Icon>
-          </MDTypography>
-        ),
-      },
-      {
-        project: <Project image={logoSlack} name="Slack" />,
-        budget: (
-          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
-            $1,000
-          </MDTypography>
-        ),
-        status: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            canceled
-          </MDTypography>
-        ),
-        completion: <Progress color="error" value={0} />,
-        action: (
-          <MDTypography component="a" href="#" color="text">
-            <Icon>more_vert</Icon>
-          </MDTypography>
-        ),
-      },
-      {
-        project: <Project image={logoInvesion} name="Invesion" />,
-        budget: (
-          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
-            $2,300
-          </MDTypography>
-        ),
-        status: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            done
-          </MDTypography>
-        ),
-        completion: <Progress color="success" value={100} />,
-        action: (
-          <MDTypography component="a" href="#" color="text">
-            <Icon>more_vert</Icon>
-          </MDTypography>
-        ),
-      },
-    ],
+        )
+    }))
+    
+    
+    
+    
+    
+    // [
+    //   {
+    //     survey: <Survey image={LogoAsana} name="Asana" />,
+    //     description: (
+    //       <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
+    //         $2,500
+    //       </MDTypography>
+    //     ),
+    //     created_on: (
+    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+    //         working
+    //       </MDTypography>
+    //     ),
+    //     keywords: (
+    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+    //         keywords
+    //       </MDTypography>
+    //     ),
+    //     url: (
+    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+    //         keywords
+    //       </MDTypography>
+    //     ),
+    //     department: (
+    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+    //         keywords
+    //       </MDTypography>
+    //     ),
+    //     action: (
+    //       <MDTypography component="a" href="#" color="text">
+    //         <Icon>more_vert</Icon>
+    //       </MDTypography>
+    //     ),
+    //   }
+    // ],
   };
 }
